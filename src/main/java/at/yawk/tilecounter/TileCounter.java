@@ -18,7 +18,7 @@ import lombok.Value;
  */
 public class TileCounter {
     public static void main(String[] args) throws IOException {
-        int limit = 10;
+        int limit = 10+40;
 
         List<Entry> top = new ArrayList<>();
 
