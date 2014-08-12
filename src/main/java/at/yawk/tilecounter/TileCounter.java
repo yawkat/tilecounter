@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Value;
 
 /**
@@ -23,6 +24,7 @@ public class TileCounter {
 
         Path region = Paths.get(args[0], "region");
 
+        AtomicInteger read = new AtomicInteger();
         Files.list(region).forEach(regionFile -> {
             String name = regionFile.getFileName().toString();
             int endx = name.indexOf('.', 2);
@@ -50,6 +52,7 @@ public class TileCounter {
                     top.add(entry);
                 }
             }
+            System.out.println("Read region file #" + read.incrementAndGet());
         });
 
         String format = "%7s%7s%7s%7s%7s\n";
