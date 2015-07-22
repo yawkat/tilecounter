@@ -34,6 +34,7 @@ public class IdRemove {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            boolean modifiedRegion = false;
             for (Chunk chunk : world.getAllChunks()) {
                 int removed = 0;
                 for (int regionI = 0; regionI < 256 / 16; regionI++) {
@@ -53,18 +54,21 @@ public class IdRemove {
                     }
                 }
                 if (removed != 0) {
+                    modifiedRegion = true;
                     System.out.println(
                             "Removed " + removed + " tiles and blocks from chunk " + chunk.getChunkX() + " " +
                             chunk.getChunkZ());
+                    chunk.calculateHeightMap(lighter);
                 }
-                chunk.calculateHeightMap(lighter);
             }
-            try (DataOutputStream input = new DataOutputStream(Files.newOutputStream(regionFile))) {
-                world.writeRegionFile(rx, ry, input);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (modifiedRegion) {
+                try (DataOutputStream input = new DataOutputStream(Files.newOutputStream(regionFile))) {
+                    world.writeRegionFile(rx, ry, input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Saved region file #" + read.incrementAndGet());
             }
-            System.out.println("Saved region file #" + read.incrementAndGet());
         });
     }
 }
